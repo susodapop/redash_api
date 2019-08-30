@@ -1,0 +1,183 @@
+openapi: 3.0.0
+info:
+  title: Redash v8
+  version: '1.0'
+  contact:
+    name: Jesse Whitehouse
+    url: github.com/susodapop
+    email: jesse@whitehouse.dev
+  license:
+    name: MIT
+  description: The API that backs Redash. All functions of the application can be performed via this API.
+servers:
+  - url: 'https://app.redash.io/<your-org-slug>/api'
+    description: Production
+  - url: 'https://beta.redash.io/<your-org-slug>/api'
+    description: Beta Features
+paths:
+  /users:
+    get:
+      summary: Get a list of users
+      operationId: getAllUsers
+      tags: &ref_0
+        - users
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: number
+                  page:
+                    type: number
+                  page_size:
+                    type: number
+                  results:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        auth_type:
+                          type: string
+                          enum:
+                            - external
+                            - password
+                        is_disabled:
+                          type: boolean
+                        updated_at:
+                          type: string
+                          format: date-time
+                          example: '2019-01-01T00:00:00.000Z'
+                        profile_image_url:
+                          type: string
+                        is_invitation_pending:
+                          type: boolean
+                        groups:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: number
+                              name:
+                                type: string
+                        id:
+                          type: number
+                        name:
+                          type: string
+                        created_at:
+                          type: string
+                          format: date-time
+                          example: '2019-01-01T00:00:00.000Z'
+                        disabled_at:
+                          type: string
+                          format: date-time
+                          example: '2019-01-01T00:00:00.000Z'
+                        is_email_verified:
+                          type: boolean
+                        active_at:
+                          type: string
+                          format: date-time
+                          example: '2019-01-01T00:00:00.000Z'
+                        email:
+                          type: string
+                          format: email
+              examples: {}
+      description: Retrieves a list of all non disabled and pending users.
+      parameters:
+        - schema:
+            type: boolean
+            default: 'false'
+          in: query
+          name: disabled
+          description: Include disabled users
+        - schema:
+            type: boolean
+            default: 'true'
+          in: query
+          name: pending
+          description: Include pending user invitations.
+    post:
+      summary: Create a new user
+      operationId: createNewUser
+      tags: *ref_0
+      responses:
+              '200':
+                description: OK
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        auth_type:
+                          type: string
+                          enum:
+                            - external
+                            - password
+                        is_disabled:
+                          type: boolean
+                        updated_at:
+                          type: string
+                          format: date-time
+                          example: '2019-01-01T00:00:00.000Z'
+                        profile_image_url:
+                          type: string
+                        is_invitation_pending:
+                          type: boolean
+                        groups:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: number
+                              name:
+                                type: string
+                        id:
+                          type: number
+                        name:
+                          type: string
+                        created_at:
+                          type: string
+                          format: date-time
+                          example: '2019-01-01T00:00:00.000Z'
+                        disabled_at:
+                          type: string
+                          format: date-time
+                          example: '2019-01-01T00:00:00.000Z'
+                        is_email_verified:
+                          type: boolean
+                        active_at:
+                          type: string
+                          format: date-time
+                          example: '2019-01-01T00:00:00.000Z'
+                        email:
+                          type: string
+                          format: email
+      description: Creates a new user and triggers an invitation email
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                  format: email
+              required:
+                - name
+                - email
+        description: Include the name and a valid email address for your user.
+components:
+  schemas: {}
+  securitySchemes:
+    scheme_0:
+      name: API Key
+      type: apiKey
+      in: header
+      description: 'Key {your api key}'
